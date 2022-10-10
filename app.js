@@ -1,9 +1,16 @@
 const express = require ('express');
+const bodyParser = require ('body-parser');
 
 const app = express();
 
-app.set('view engine', 'pug');
+
+const users = []; //temporary users array
+
+app.set('view engine', 'ejs');
 app.set('views', 'views');
+
+// app.use(bodyParser({extended : false})); deprecated
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.get('/', (req, res, next) => {
     res.render('index', {
@@ -13,12 +20,15 @@ app.get('/', (req, res, next) => {
 
 app.get('/users', (req, res, next) => {
     res.render('users', {
-        pageTitle: 'User'
+        pageTitle: 'User',
+        users: users,
+        hasUsers: users.length > 0
     });
 });
 
 
-app.post('/add-user',(req,res,next) =>{
+app.post('/add-user',(req,res,next) => {
+    users.push({ name: req.body.username });
     res.redirect('/users');
 });
 
